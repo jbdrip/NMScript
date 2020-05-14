@@ -1,0 +1,58 @@
+import("Arboles.nm");
+
+class Main
+{
+    void main()
+    {
+        //expresiones();
+        //recursividad();
+        //errores();
+        Arboles a = new Arboles();
+        ArbolBinario(a);
+        ArbolAVL(a);
+        //a = null;
+        //println(a.a);
+    }
+
+    /**
+    *   ARBOL BINARIO
+    */
+    void ArbolBinario(Arboles a)
+    {
+        println("----- ARBOL BINARIO -----");
+        println("--- Analizando insercion ABB ---");
+        a.insercionABB();
+        graficar_dot("binario1.png", a.getDotABB());
+        a.preordenABB();
+        a.inordenABB();
+        a.postordenABB();
+        println("Done.");
+
+        println("--- Analizando busqueda ABB ---");
+        if (a.buscarABB() == 5) {
+            println("Done.");
+        } else {
+            println("RIP.");
+        }
+        println("--- Analizando eliminación ABB ---");
+        a.eliminarABB();
+        graficar_dot("binario2.png", a.getDotABB());
+        a.inordenABB();
+        println("Done.");
+    }
+
+    /**
+    *   ARBOL AVL
+    */
+    void ArbolAVL(Arboles a)
+    {
+        println("----- ARBOL AVL -----");
+        println("--- Analizando insercion Avl ---");
+        a.insertarAVL();
+        graficar_dot("AVL1.png", a.getDot());
+        a.inordenAvl();
+        a.preordenAvl();
+        a.postordenAvl();
+        println("Done.");
+    }
+}

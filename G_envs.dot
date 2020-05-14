@@ -1,0 +1,43 @@
+digraph {
+
+
+node0 [    shape=plaintext
+    label=<
+
+      <table cellspacing='0'>
+      <tr><td>TIPO</td><td>ID</td><td>VALOR</td></tr>
+      <tr><td>entero</td><td>a</td><td>5</td></tr>
+    </table>
+>];
+node1 -> node0;
+
+
+node1 [    shape=plaintext
+    label=<
+
+      <table cellspacing='0'>
+      <tr><td>TIPO</td><td>ID</td><td>VALOR</td></tr>
+    </table>
+>];
+node2 -> node1;
+
+
+node2 [    shape=plaintext
+    label=<
+
+      <table cellspacing='0'>
+      <tr><td>TIPO</td><td>ID</td><td>VALOR</td></tr>
+      <tr><td>entero</td><td>i</td><td>6</td></tr>
+    </table>
+>];
+node3 -> node2;
+
+
+node3 [    shape=plaintext
+    label=<
+
+      <table cellspacing='0'>
+      <tr><td>TIPO</td><td>ID</td><td>VALOR</td></tr>
+    </table>
+>];
+ }

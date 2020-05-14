@@ -1,0 +1,127 @@
+Import "EntradasFase2/NodoArbolBinario.NM";
+
+class ArbolBinario{
+	
+	NodoArbolBinario raiz;
+
+	ArbolBinario(){
+		raiz = null;
+	}
+
+
+	NodoArbolBinario getRaiz() {
+		return raiz;
+	}
+
+	void insertar(int val) {
+		if (raiz == null) {
+			raiz = new NodoArbolBinario(val);
+		} else {
+			raiz.insertar(val);
+		}
+	}
+
+	void preorden() {
+        Println("--------------- Recorrido preorden ---------------");
+        preorden(raiz);
+        Println("");
+    }
+
+    void preorden(NodoArbolBinario a) {
+        //Println("Valor a = " + a);
+        if (a == null) {
+            return;
+        }
+        Print(a.valor + ",");
+        preorden(a.izquierdo);
+        preorden(a.derecho);
+    }
+
+    void inorden() {
+        Println("--------------- Recorrido inorden ---------------");
+        inorden(raiz);
+        Println("");
+    }
+
+    void inorden(NodoArbolBinario a) {
+    	//Println("Valor a = " + a);
+        if (a == null) {
+            return;
+        }
+        inorden(a.izquierdo);
+        Print(a.valor + ",");
+        inorden(a.derecho);
+    }
+
+    void postorden() {
+        Println("--------------- Recorrido postorden ---------------");
+        postorden(raiz);
+        Println("");
+    }
+
+    void postorden(NodoArbolBinario a) {
+        //Println("Valor a = " + a);
+        if (a == null) {
+            return;
+        }
+        postorden(a.izquierdo);
+        postorden(a.derecho);
+        Print(a.valor + ",");
+    }
+
+    // Get minimum element in binary search tree
+    NodoArbolBinario elemento_minimo(NodoArbolBinario raiz) {
+        if (raiz.izquierdo == null) {
+            return raiz;
+        } else {
+            return elemento_minimo(raiz.izquierdo);
+        }
+    }
+
+
+     NodoArbolBinario eliminar(NodoArbolBinario raiz, int valor) {
+        if (raiz == null) {
+            return null;
+        }
+        if (raiz.valor > valor) {
+            raiz.izquierdo = eliminar(raiz.izquierdo, valor);
+        } else if (raiz.valor < valor) {
+            raiz.derecho = eliminar(raiz.derecho, valor);
+
+        } else {
+            // if nodeToBeDeleted have both children
+            if (raiz.izquierdo != null && raiz.derecho != null) {
+                NodoArbolBinario temp = raiz;
+                // Finding minimum element from derecho
+                NodoArbolBinario minNodeForRight = elemento_minimo(temp.derecho);
+                // Replacing current node with minimum node from derecho subtree
+                raiz.valor = minNodeForRight.valor;
+                // Deleting minimum node from derecho now
+                eliminar(raiz.derecho, minNodeForRight.valor);
+
+            } // if nodeToBeDeleted has only izquierdo child
+            else if (raiz.izquierdo != null) {
+                //raiz = raiz.izquierdo;
+                raiz.valor = raiz.izquierdo.valor;
+                raiz.izquierdo = raiz.izquierdo.izquierdo;
+                raiz.derecho = raiz.izquierdo.derecho;
+            } // if nodeToBeDeleted has only derecho child
+            else if (raiz.derecho != null) {
+                //raiz = raiz.derecho;
+                raiz.valor = raiz.derecho.valor;
+                raiz.izquierdo = raiz.derecho.izquierdo;
+                raiz.derecho = raiz.derecho.derecho;
+            } // if nodeToBeDeleted do not have child (Leaf node)
+            else {
+                raiz = null;
+            }
+        }
+        return raiz;
+    }
+
+
+    String getDot() {
+        return raiz.graficar();
+    }
+
+}

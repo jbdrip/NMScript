@@ -1,0 +1,36 @@
+
+class NodoTablaHash
+    {
+        String nombre;
+        boolean usada;
+
+        NodoTablaHash(boolean usada)
+        {
+            this.usada = usada;
+        }
+
+        String getNombre()
+        {
+            return this.nombre;
+        }
+
+        void setNombre(String nombre)
+        {
+            this.nombre = nombre;
+        }
+
+        boolean isUsada()
+        {
+            return this.usada;
+        }
+
+        void setUsada(boolean usada)
+        {
+            this.usada = usada;
+        }
+
+        void nuevo(String nombre)
+        {
+            setNombre(nombre);
+        }
+    }

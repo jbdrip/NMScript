@@ -1,0 +1,27 @@
+class Funcionalidades{
+	
+
+	//Desde el constructor voy a mandar a llamar a todo
+	Funcionalidades(){
+		arreglos();
+		recursividad();
+		objetos();
+	}
+
+	//Para correr la parte de los arreglos
+	void arreglos(){
+		Arreglos a = new Arreglos();
+	}
+
+	void recursividad(){
+		Recursividad r = new Recursividad();
+	}
+
+	void objetos(){
+		Objetos o = new Objetos();
+	}
+}
+
+Import "EntradasFase2/Arreglos.NM";
+Import "EntradasFase2/Recursividad.NM";
+Import "EntradasFase2/Objetos.NM";

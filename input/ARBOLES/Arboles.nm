@@ -1,0 +1,79 @@
+import("ArbolBinario.nm");
+import("ArbolAVL.nm");
+
+class Arboles
+{
+	ArbolAVL arbol_numeros;
+        ArbolBinario abb;
+
+	Arboles()
+	{
+		arbol_numeros = new ArbolAVL();
+		abb = new ArbolBinario();
+	}
+
+	void insercionABB() 
+	{
+        	abb.insertar(12);
+        	abb.insertar(5);
+        	abb.insertar(26);
+        	abb.insertar(33);
+        	abb.insertar(59);
+        	abb.insertar(27);
+        	abb.insertar(15);
+    	}
+
+    void inordenABB() {
+        abb.inorden();
+    }
+    void preordenABB() {
+        abb.preorden();
+    }
+    void postordenABB() {
+        abb.postorden();
+    }
+
+    NodoArbolBinario buscarABB() {
+        return abb.elemento_minimo(abb.getRaiz()).valor;
+    }
+
+    void eliminarABB() {
+        abb.eliminar(abb.getRaiz(), 26);
+    }
+
+    void insertarAVL()
+    {
+        arbol_numeros.insertar(12);
+        arbol_numeros.insertar(5);
+        arbol_numeros.insertar(26);
+        arbol_numeros.insertar(33);
+        arbol_numeros.insertar(59);
+        arbol_numeros.insertar(27);
+        arbol_numeros.insertar(15);
+        arbol_numeros.insertar(47);
+        arbol_numeros.insertar(74);
+        arbol_numeros.insertar(84);
+        arbol_numeros.insertar(88);
+        arbol_numeros.insertar(90);
+        arbol_numeros.insertar(124);
+        arbol_numeros.insertar(612);
+    }
+
+    void inordenAvl() {
+        arbol_numeros.inorden();
+    }
+    void preordenAvl() {
+        arbol_numeros.preorden();
+    }
+    void postordenAvl() {
+        arbol_numeros.postorden();
+    }
+
+    String getDotABB() {
+        return abb.getDot();
+    }
+
+    String getDot(){
+        return arbol_numeros.getDot();
+    }
+}

@@ -1,0 +1,9 @@
+digraph lista{ 
+ nodesep=.05;
+rankdir = LR; 
+node [shape=record,width=.1,height=.1];
+nodeArreglo [label = "<f0> 0  |<f1> 1",height=2.5];
+ node [width = 1.5];
+node0[label = " {<n> Nery} " ];
+nodeArreglo:f0-> node0:n;
+}

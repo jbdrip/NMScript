@@ -1,0 +1,52 @@
+class Escalonada {
+
+    Escalonada() {
+        //int i, j, k, n;
+        int i;
+        int j;
+        int k;
+        int n;
+        
+        double[][] x = new double[80][80];
+        n = 10;
+
+        for (i = 1; i <= n; i++) {
+            for (j = 1; j <= n; j++) {
+                x[i][j] = 10.0*i;
+            }
+        }
+
+        for (k = 1; k < n; k++) {
+            for (i = k + 1; i <= n; i++) {
+                for (j = 1; j <= n; j++) {
+                    x[i][j] = x[i][j] - (x[k][j] * x[i][k]) / x[k][k];
+                }
+
+            }
+        }
+
+        Println("la matriz escalonada es");
+        for (i = 1; i <= n; i++) {
+            Println("\n");
+            for (j = 1; j <= n; j++) {
+                Println(x[i][j]);
+            }
+        }
+
+        for (k = n; k > 1; k--) {
+            for (i = k - 1; i >= 1; i--) {
+                for (j = n; j >= 1; j--) {
+                    x[i][j] = x[i][j] - (x[k][j] * x[i][k]) / x[k][k];
+                }
+            }
+        }
+
+        Println("la matriz escalonada es");
+        for (i = 1; i <= n; i++) {
+            Println("\n");
+            for (j = 1; j <= n; j++) {
+                Println(x[i][j]);
+            }
+        }
+    }
+}

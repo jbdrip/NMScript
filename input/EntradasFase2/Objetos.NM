@@ -1,0 +1,153 @@
+class Objetos{
+
+	ArbolBinario arbolBinario;
+	ArbolAVL arbolAVL;
+	TablaHash tablaHash;
+
+	Objetos(){
+        Println("--------------- Árbol Binario ---------------");
+		arbolBinario = new ArbolBinario();
+		insertarABB();
+		Graficar_dot("binario1.png", getDotABB());
+		imprimirRecorridosABB();
+
+		Println("--------------- Eliminación Árbol Binario ---------------");
+		eliminarABB(600);
+		Graficar_dot("binario2.png", getDotABB());
+		imprimirRecorridosABB();
+
+
+		Println("--------------- Árbol AVL ---------------");
+		arbolAVL = new ArbolAVL();
+		insertarAVL();
+		Graficar_dot("AVL.png", getDotAVL());
+		imprimirRecorridosAVL();
+
+
+
+		Println("--------------- Tabla Hash ---------------");
+		tablaHash = new TablaHash();
+		insertarHash();
+		
+        if (getPorNombre("Nery")) {
+            Println("---> Done.");
+        } else {
+            Println("---> RIP.");
+        }
+
+        eliminarHash("Nery");
+        
+		Graficar_dot("hash6.png", getDotHash());
+	}
+
+	/**
+	*	Métodos del árbol binario
+	*/
+	void insertarABB(){
+		arbolBinario.insertar(500);
+		arbolBinario.insertar(400);
+		arbolBinario.insertar(300);
+		arbolBinario.insertar(600);
+		arbolBinario.insertar(700);
+		arbolBinario.insertar(800);
+		arbolBinario.insertar(410);
+		arbolBinario.insertar(405);
+		arbolBinario.insertar(415);
+		arbolBinario.insertar(590);
+		arbolBinario.insertar(595);
+		arbolBinario.insertar(585);
+		arbolBinario.insertar(810);
+		arbolBinario.insertar(790);
+		arbolBinario.insertar(500); //Repetido
+	}
+
+	void imprimirRecorridosABB(){
+		arbolBinario.preorden();
+		arbolBinario.inorden();
+		arbolBinario.postorden();
+		Println("");
+		Println("");
+	}
+
+	void eliminarABB(int valor){
+		arbolBinario.eliminar(arbolBinario.getRaiz(), valor);
+	}
+
+	String getDotABB() {
+        return arbolBinario.getDot();
+    }
+
+
+
+
+    /**
+	*	Métodos del árbol AVL
+	*/
+	void insertarAVL(){
+		arbolAVL.insertar(500);
+		arbolAVL.insertar(400);
+		arbolAVL.insertar(300);
+		arbolAVL.insertar(600);
+		arbolAVL.insertar(700);
+		arbolAVL.insertar(800);
+		arbolAVL.insertar(410);
+		arbolAVL.insertar(405);
+		arbolAVL.insertar(415);
+		arbolAVL.insertar(590);
+		arbolAVL.insertar(595);
+		arbolAVL.insertar(585);
+		arbolAVL.insertar(810);
+		arbolAVL.insertar(790);
+		arbolAVL.insertar(500); //Repetido
+	}
+
+	void imprimirRecorridosAVL(){
+		arbolAVL.preorden();
+		arbolAVL.inorden();
+		arbolAVL.postorden();
+		Println("");
+		Println("");
+	}
+
+	String getDotAVL() {
+        return arbolAVL.getDot();
+    }
+
+	
+
+	/**
+	*	Métodos de la tabla hash
+	*/
+	void insertarHash() {
+        tablaHash.insertarNodo("Nery");
+        Graficar_dot("hash1.png", getDotHash());
+        tablaHash.insertarNodo("Fernanda");
+        Graficar_dot("hash2.png", getDotHash());
+        tablaHash.insertarNodo("Julio");
+        Graficar_dot("hash3.png", getDotHash());
+        tablaHash.insertarNodo("Rodrigo");
+        Graficar_dot("hash4.png", getDotHash());
+        tablaHash.insertarNodo("Maria");
+        Graficar_dot("hash5.png", getDotHash());
+    }
+    
+    String getDotHash(){
+    	tablaHash.grafica();
+    	//Println(tablaHash.dot);
+        return tablaHash.dot;
+    }
+    
+    boolean getPorNombre(String nombre){
+        return tablaHash.existeNombre(nombre);
+    }
+    
+    void eliminarHash(String nombre){
+        tablaHash.eliminarNodo(nombre);
+    }
+
+}
+
+Import "EntradasFase2/ArbolBinario.NM";
+Import "EntradasFase2/ArbolAVL.NM";
+Import "EntradasFase2/TablaHash.NM";
+

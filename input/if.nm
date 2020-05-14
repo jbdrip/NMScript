@@ -1,0 +1,111 @@
+println("3) Operaciones Relacionales Basicas");
+int salida = 0;
+
+        if(salida < 10)
+        {
+            salida = 5 * 9;
+            if(salida > 44)
+            {
+                salida++;
+            }
+        }else
+        {
+            salida = 1;
+        }
+
+        if(salida != 1)
+        {
+
+            if(salida == 46)
+            {
+
+                println("Salida CORRECTA!!");
+            }else
+            {
+                println("Salida incorrecta!!");
+
+            }
+        }else
+        {
+            println("Salida incorrecta!!");
+        }
+
+println("5) Operaciones Logicas Basicas");
+        if(((true == true) && (true != false)) || (1 > 10) && (!(true) == true))
+        {
+            println("Salida CORRECTA!!");
+        }else
+        {
+            println("Salida incorrecta!!");
+        }
+
+println("6) Operaciones Logicas Avanzadas");
+        if((15 == 14) || (((15 * 2 >= 15) && (12 < 24)) || ((98 / 2 == 15) || (!(15 != 6 - 1)))))
+        {
+            println("Salida CORRECTA!!");
+        }else
+        {
+            println("Salida incorrecta!!");
+        }
+
+println("7) Operaciones Conjuntas");
+        if(!(5 * 3 - 1 == 14) && !(!(15 == 6 - 1)))
+        {
+            println("Salida incorrecta!!");
+        }else
+        {
+            int variable = -1 * (54 / 6 + 9 + 9 - 1 * 8 / 2 * 17);
+            int var2 = 48 / 4 * 79 - 2 + 8;
+            String salida = variable + "" + var2;
+
+           if(salida == "41954" || salida == "41.0954")
+            {
+                println("Resultado: 41954");
+            }else
+            {
+                println("aaSalida incorrecta!!");
+            }
+        }
+int ab = 3;
+
+if(ab == 2)
+{
+println(21);
+}
+else if(ab == 3)
+{
+println("318");
+}
+else if(ab == 4)
+{
+println("311");
+}
+else if(ab == 3)
+{
+println("314");
+}
+else if(ab == 3)
+{
+println("31");
+}
+else if(ab == 3)
+{
+println("311");
+}
+else
+{
+println(41);
+}
+
+switch(ab)
+{
+case 2:
+ println(2);
+case 1:
+ println(32);
+default:
+ println("default");
+ //break;
+case 4:
+ println(33);
+}

@@ -1,0 +1,58 @@
+
+
+		int int_ = 0;
+
+		double double_ = 0.0;
+
+		char char__ = '0';
+
+		boolean true_ = false;
+
+		boolean false_ = true;
+
+		String String_1 = "";
+
+		String String_2 = "";
+
+		String String_3 = "";
+
+		String String_4 = "";
+
+
+
+		//Aritmeticas
+
+		int_ = (584128858 + - 6348675 * -870 + 'N' - 181220199 * 'M') / 15;
+
+		double_ = (584128858 + - 6348675 * -870 + 'N' - 181220199 * 'M') / 15 + ((2 **((5)))) - - - 10000000;
+
+		//double_ = (584128858 + - 6348675 * -870 + 'N' - 181220199 * 'M') / 15 + pow(2,5) - - - 10000000;
+
+		
+
+		//Relacionales
+
+		char__ = 'N';
+		int char_ = char__ + 0;
+
+		char_ --; //M
+
+
+
+		String_1 = (-50 > int_) + "," + (- 504 < 504) + "," + ('N' <= 'M') + "," + (0.00005 >= 0.000005) + "," + (4 + 5 * 3 == (4 + 5) * 3) + "," + (5 * 3 + 4 != 5 * (3 + 4));
+
+		String_2 = (char_ > 77) + "," + (char_ < 78) + "," + (char_ + 10 <= char_) + "," + (char_ + 10 >= char_) + "," + (char_ -- == char_) + "," + (char_ + 1 != char_ ++);
+
+//Logicas
+
+		//Ver corto circuito
+
+		true_ = true;
+
+		false_ = false;
+
+		char__ = 'N';
+
+		char_ = char__ + 0;
+
+		char_ --; //M

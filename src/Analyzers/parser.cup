@@ -1,0 +1,401 @@
+package Analyzers;
+
+import proyecto_olc1.*;
+import java.util.ArrayList;
+import java_cup.runtime.*;
+import javax.swing.JOptionPane;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import Tree.Instruction;
+import Tree.Print;
+import Tree.Expression;
+import Tree.Declaration;
+import Tree.Signature;
+import Tree.For;
+import Tree.If;
+import Tree.Switch;
+import Tree.While;
+import Tree.Case;
+import Tree.Continue;
+import Tree.Break;
+import Tree.DoWhile;
+import Tree.GraphDot;
+import Tree.GraphEnv;
+import Tree.Import;
+import Tree.Void;
+import Tree.Function;
+import Tree.FunctionVoid_Call;
+import Tree.Return;
+import Tree.Expression.Expression_type;
+import Tree.Class_;
+import Tree.Instance;
+import Enviroment.Sym.EnumType;
+
+parser code
+{:
+    public LinkedList<Instruction> AST;
+    public ArrayList<Error_> errorList = new ArrayList<Error_>();
+
+    public String salida = "" ; // Aquí guardaremos nuestra resultado.
+    private int contador = 0;
+
+    public void syntax_error(Symbol s)
+    {
+        Error_ newError = new Error_(s.right, (s.left - 1), "Sintactico", "Elemento sintactico desconocido: '" + (String)s.value + "'.");
+        errorList.add(newError);
+        //System.err.println("El analizador se recupero tras el error\nError en la Línea " + (s.right+1) + " Columna " + (s.left+1) + ". Identificador " + s.value + " no reconocido." );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("El analizador No se recupero tras el error\nError en la Línea " + (s.right+1) + "Columna "+ (s.left+1)+ ". Identificador " + s.value + " no reconocido.");
+    }
+
+    public void setSalida(String cadena){salida = cadena;} // Metodo que guarda nuestro resultado.
+:}
+
+
+terminal String cadena, entero, doble, caracter, id, true_, false_, void_, return_, class_, punto;
+terminal String int_, double_, char_, string_, boolean_, null_, masMas, menosMenos, new_, this_, corcheteAbre, corcheteCierre;
+terminal String mas, menos, por, dividido, potencia, modulo, mayorQue, menorQue, mayorIgual, menorIgual, igualIgual, diferenteIgual, and, or, xor, not;
+terminal String coma, puntoComa, dosPuntos, igual, parIzq, parDer, llaveAbre, llaveCierre, import_, graficar_env;
+terminal String if_, else_, for_, while_, do_, switch_, case_, default_, break_, continue_, print_, println_, graficar_dot;
+
+non terminal INICIO;
+non terminal LinkedList<Instruction> INSTRUCCIONES, ELSE;
+non terminal LinkedList<Declaration> PARAMETROS;
+non terminal LinkedList<Expression> PARAMS_VALUE, TAM_ARREGLOS;
+non terminal LinkedList<If> ELSE_IF;
+non terminal LinkedList<Case> CASES;
+non terminal Instruction INSTRUCCION;
+non terminal Expression EXPRESION;
+non terminal Print IMPRIMIR;
+non terminal GraphDot GRAFICAR_DOT;
+non terminal GraphEnv GRAFICAR_ENV;
+non terminal Declaration DECLARACION;
+non terminal Signature ASIGNACION;
+non terminal If IF;
+non terminal For FOR;
+non terminal While WHILE;
+non terminal DoWhile DOWHILE;
+non terminal Switch SWITCH;
+non terminal Import IMPORT;
+non terminal Void VOID;
+non terminal Function FUNCTION;
+non terminal EnumType TIPO;
+non terminal FunctionVoid_Call FUNCTION_VOID_CALL;
+non terminal Class_ CLASE;
+non terminal Instance INSTANCIA;
+non terminal int ARREGLO;
+
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence left mayorQue, menorQue, mayorIgual, menorIgual, igualIgual, diferenteIgual;
+precedence left mas, menos;
+precedence left por, dividido, modulo;
+precedence left potencia;
+precedence right not;
+precedence left punto;
+
+start with INICIO;
+
+INICIO::= INSTRUCCIONES:i
+    {:
+        parser.AST = i;
+    :}
+;
+
+INSTRUCCIONES::= INSTRUCCIONES:a INSTRUCCION:b
+    {:
+        RESULT = a;
+        RESULT.add(b);
+    :}
+    | INSTRUCCION:a
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(a);
+    :}
+;
+
+INSTRUCCION::= IMPRIMIR:i puntoComa {: RESULT = i; :}
+    | GRAFICAR_DOT:g puntoComa {: RESULT = g; :}
+    | GRAFICAR_ENV:g puntoComa {: RESULT = g; :}
+    | DECLARACION:d puntoComa {: RESULT = d; :}
+    | ASIGNACION:a puntoComa {: RESULT = a; :}
+    | DOWHILE:d  puntoComa {: RESULT = d; :}
+    | IMPORT:i puntoComa {: RESULT = i; :}
+    | CLASE:c {: RESULT = c; :}
+    | SWITCH:s {: RESULT = s; :}
+    | WHILE:w {: RESULT = w; :}
+    | FOR:f {: RESULT = f; :}
+    | IF:i {: RESULT = i; :}
+    | VOID:v {: RESULT = v; :}
+    | INSTANCIA:i puntoComa {: RESULT = i; :}
+    | FUNCTION:f {: RESULT = f; /*aqui alv*/:}
+    | EXPRESION:e puntoComa {: RESULT = e; :}
+    | continue_:c puntoComa {: RESULT = new Continue(cright, cleft - 1); :}
+    | break_:b puntoComa {: RESULT = new Break(bright, bleft -1); :}
+    | return_:r puntoComa {: RESULT = new Return(null, rright, rleft - 1); :}
+    | return_:r EXPRESION:e puntoComa {: RESULT = new Return(e, rright, rleft - 1); :}
+;
+
+INSTANCIA::= id:i1 id:i2 igual new_ id:i3 parIzq parDer {: RESULT = new Instance(i2, i1, i3, null, i1right, i1left - 1); :}
+    | id:i1 id:i2 {: RESULT = new Instance(i2, i1, "", null, i1right, i1left - 1); :}
+    | id:i1 id:i2 igual new_ id:i3 parIzq PARAMS_VALUE:pv parDer {: RESULT = new Instance(i2, i1, i3, pv, i1right, i1left - 1); :}
+    | id:i1 id:i2 igual EXPRESION:e {: RESULT = new Instance(i2, i1, e, i1right, i1left - 1); :}
+    | id:i1 ARREGLO:a id:i2 igual new_ id:i3 TAM_ARREGLOS:ta {: RESULT = new Instance(i2, i1, i3, a, ta, null, i1right, i1left - 1); :}
+    | id:i1 ARREGLO:a id:i2 igual EXPRESION:e {: RESULT = new Instance(i2, i1, null, a, null, e, i1right, i1left - 1); :}
+    | id:i1 ARREGLO:a id:i2 {: RESULT = new Instance(i2, i1, null, a, null, null, i1right, i1left - 1); :}
+;
+
+CLASE::= class_:c id:i llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Class_(i, ins, cright, cleft - 1); :}
+    | class_:c id:i llaveAbre llaveCierre {: RESULT = new Class_(i, null, cright, cleft - 1); :}
+;
+
+FUNCTION_VOID_CALL::= id:i parIzq parDer {: RESULT = new FunctionVoid_Call(i, null, iright, ileft - 1); :}
+    | id:i parIzq PARAMS_VALUE:pv parDer {: RESULT = new FunctionVoid_Call(i, pv, iright, ileft - 1); :}
+;
+
+PARAMS_VALUE::= PARAMS_VALUE:pv coma EXPRESION:e
+    {:
+        RESULT = pv;
+        RESULT.add(e);
+    :}
+    | EXPRESION:e
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(e);
+    :}
+;
+
+VOID::= void_:v id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Void(i, EnumType.metodo, null, null, vright, vleft - 1); :}
+    | void_:v id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Void(i, EnumType.metodo, ins, null, vright, vleft - 1); :}
+    | void_:v id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Void(i, EnumType.metodo, null, p, vright, vleft - 1); :}
+    | void_:v id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Void(i, EnumType.metodo, ins, p, vright, vleft - 1); :}
+    | id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Void(i, EnumType.constructor, null, null, iright, ileft - 1); :}
+    | id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Void(i, EnumType.constructor, ins, null, iright, ileft - 1); :}
+    | id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Void(i, EnumType.constructor, null, p, iright, ileft - 1); :}
+    | id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Void(i, EnumType.constructor, ins, p, iright, ileft - 1); :}
+;
+
+FUNCTION::= TIPO:t id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Function(i, t, null, null, tright, tleft - 1); :}
+    | TIPO:t id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, t, ins, null, tright, tleft - 1); :}
+    | TIPO:t id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Function(i, t, null, p, tright, tleft - 1); :}
+    | TIPO:t id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, t, ins, p, tright, tleft - 1); :}
+    | id:t id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Function(i, EnumType.objeto, null, null, tright, tleft - 1); :}
+    | id:t id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, EnumType.objeto, ins, null, tright, tleft - 1); :}
+    | id:t id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Function(i, EnumType.objeto, null, p, tright, tleft - 1); :}
+    | id:t id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, EnumType.objeto, ins, p, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Function(i, t, null, null, a, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, t, ins, null, a, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Function(i, t, null, p, a, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, t, ins, p, a, tright, tleft - 1); :}
+    | id:t ARREGLO:a id:i parIzq parDer llaveAbre llaveCierre {: RESULT = new Function(i, EnumType.objeto, null, null, a, tright, tleft - 1); :}
+    | id:t ARREGLO:a id:i parIzq parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, EnumType.objeto, ins, null, a, tright, tleft - 1); :}
+    | id:t ARREGLO:a id:i parIzq PARAMETROS:p parDer llaveAbre llaveCierre {: RESULT = new Function(i, EnumType.objeto, null, p, a, tright, tleft - 1); :}
+    | id:t ARREGLO:a id:i parIzq PARAMETROS:p parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new Function(i, EnumType.objeto, ins, p, a, tright, tleft - 1); :}
+;
+
+PARAMETROS::= PARAMETROS:p coma TIPO:t id:i
+    {:
+        RESULT = p;
+        RESULT.add(new Declaration(i, t, null, -1, tright, tleft - 1));
+    :}
+    | PARAMETROS:p coma id:t id:i
+    {:
+        RESULT = p;
+        RESULT.add(new Declaration(i, EnumType.objeto, null, -1, tright, tleft - 1));
+    :}
+    | TIPO:t id:i
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Declaration(i, t, null, -1, tright, tleft - 1));
+    :}
+    | id:t id:i
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Declaration(i, EnumType.objeto, null, -1, tright, tleft - 1));
+    :}
+    | TIPO:t ARREGLO:a id:i 
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Declaration(i, t, null, a, tright, tleft - 1));
+    :}
+    | id:t ARREGLO:a id:i 
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Declaration(i, EnumType.objeto, null, a, tright, tleft - 1));
+    :}
+;
+
+IMPORT::= import_:i EXPRESION:e {: RESULT = new Import(e, iright, ileft - 1); :}
+;
+
+DECLARACION::= TIPO:t id:i igual EXPRESION:e {: RESULT = new Declaration(i, t, e, -1, tright, tleft - 1); :}
+    | TIPO:t id:i {: RESULT = new Declaration(i, t, null, -1, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i igual llaveAbre PARAMS_VALUE:pv llaveCierre {: RESULT = new Declaration(i, t, null, a, pv, tright, tleft - 1); :}
+    | TIPO:t1 ARREGLO:a id:i igual new_ TIPO:t2 TAM_ARREGLOS:ta {: RESULT = new Declaration(t2, i, t1, a, ta, t1right, t1left - 1); :}
+    | TIPO:t ARREGLO:a id:i igual EXPRESION:e {: RESULT = new Declaration(i, t, e, a, tright, tleft - 1); :}
+    | TIPO:t ARREGLO:a id:i {: RESULT = new Declaration(i, t, null, a, tright, tleft - 1); :}
+;
+
+ARREGLO::= ARREGLO:a corcheteAbre corcheteCierre
+    {:
+        RESULT = a;
+        RESULT++;
+    :}
+    | corcheteAbre corcheteCierre {: RESULT = 1; :}
+;
+
+TAM_ARREGLOS::= TAM_ARREGLOS:ta corcheteAbre EXPRESION:e corcheteCierre
+    {:
+        RESULT = ta;
+        RESULT.add(e);
+    :}
+    | corcheteAbre EXPRESION:e corcheteCierre
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(e);
+    :}
+;
+
+ASIGNACION::= EXPRESION:i igual EXPRESION:e {: RESULT = new Signature(i, e, iright, ileft - 1); :}
+    | EXPRESION:e igual new_ id:i3 parIzq PARAMS_VALUE:pv parDer {: RESULT = new Signature(e, i3, pv, false, eright, eleft - 1); :}
+    | EXPRESION:e igual new_ id:i3 parIzq parDer {: RESULT = new Signature(e, i3, null, false, eright, eleft - 1); :}
+    | EXPRESION:e igual new_ id:i3 TAM_ARREGLOS:ta {: RESULT = new Signature(e, i3, ta, true, eright, eleft -1); :}
+    | EXPRESION:e igual new_ TIPO:i3 TAM_ARREGLOS:ta {: RESULT = new Signature(e, i3, ta, true, eright, eleft -1); :}
+    | EXPRESION:e igual llaveAbre PARAMS_VALUE:pv llaveCierre {: RESULT = new Signature(e, pv, eright, eleft - 1); :}
+;
+
+FOR::= for_:f parIzq INSTRUCCION:i INSTRUCCION:c ASIGNACION:a parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new For(i, a, c, ins, fright, fleft - 1); :}
+    | for_:f parIzq INSTRUCCION:i INSTRUCCION:c EXPRESION:a parDer llaveAbre INSTRUCCIONES:ins llaveCierre {: RESULT = new For(i, a, c, ins, fright, fleft - 1); :}
+    | for_:f parIzq INSTRUCCION:i INSTRUCCION:c ASIGNACION:a parDer llaveAbre llaveCierre {: RESULT = new For(i, a, c, null, fright, fleft - 1); :}
+    | for_:f parIzq INSTRUCCION:i INSTRUCCION:c EXPRESION:a parDer llaveAbre llaveCierre {: RESULT = new For(i, a, c, null, fright, fleft - 1); :}
+;
+
+DOWHILE::= do_:d llaveAbre INSTRUCCIONES:i llaveCierre while_ parIzq EXPRESION:e parDer {: RESULT = new DoWhile(e, i, dright, dleft - 1); :}
+    | do_:d llaveAbre llaveCierre while_ parIzq EXPRESION:e parDer {: RESULT = new DoWhile(e, null, dright, dleft - 1); :}
+;
+
+WHILE::= while_:w parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre {: RESULT = new While(e, i, wright, wleft - 1); :}
+    | while_:w parIzq EXPRESION:e parDer llaveAbre llaveCierre {: RESULT = new While(e, null, wright, wleft - 1); :}
+;
+
+IF::= if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre {: RESULT = new If(e, i, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre llaveCierre {: RESULT = new If(e, null, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE:el {: RESULT = new If(e, i, el, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre llaveCierre ELSE:el {: RESULT = new If(e, null, el, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE_IF:ei {: RESULT = new If(e, i, ei, true, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre llaveCierre ELSE_IF:ei {: RESULT = new If(e, null, ei, true, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE_IF:ei ELSE:el {: RESULT = new If(e, i, el, ei, aright, aleft - 1); :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre llaveCierre ELSE_IF:ei ELSE:el {: RESULT = new If(e, null, el, ei, aright, aleft - 1); :}
+;
+
+ELSE_IF::= ELSE_IF:ei else_:a if_ parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = ei;
+        RESULT.addFirst(new If(e, i, aright, aleft - 1));
+    :}
+    | ELSE_IF:ei else_:a if_ parIzq EXPRESION:e parDer llaveAbre llaveCierre
+    {:
+        RESULT = ei;
+        RESULT.addFirst(new If(e, null, aright, aleft - 1));
+    :}
+    | else_:a if_ parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new If(e, i, aright, aleft - 1));
+    :}
+    | else_:a if_ parIzq EXPRESION:e parDer llaveAbre llaveCierre
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new If(e, null, aright, aleft - 1));
+    :}
+;
+
+ELSE::= else_ llaveAbre INSTRUCCIONES:i llaveCierre {: RESULT = i; :}
+    | else_ llaveAbre llaveCierre {: RESULT = null; :}
+;
+
+SWITCH::= switch_:s parIzq EXPRESION:e parDer llaveAbre CASES:c llaveCierre {: RESULT = new Switch(e, c, sright, sleft - 1); :}
+;
+
+CASES::= CASES:c case_:a EXPRESION:e dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = c;
+        RESULT.add(new Case(e, i, aright, aleft - 1));
+    :}
+    | CASES:c case_:a EXPRESION:e dosPuntos {::}
+    | CASES:c default_:d dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = c;
+        RESULT.add(new Case(null, i, dright, dleft - 1));
+    :}
+    | CASES:c default_:d dosPuntos {::}
+    | case_:a EXPRESION:e dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Case(e, i, aright, aleft - 1));
+    :}
+    | case_:a EXPRESION:e dosPuntos {::}
+    | default_:d dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new LinkedList<>();
+        RESULT.add(new Case(null, i, dright, dleft - 1));
+    :}
+    | default_:d dosPuntos {::}
+;
+
+IMPRIMIR::= println_:p parIzq EXPRESION:e parDer {: RESULT = new Print(e, true, pright, pleft - 1); :}
+    | print_:p parIzq EXPRESION:e parDer {: RESULT = new Print(e, false, pright, pleft - 1); :}
+;
+
+GRAFICAR_DOT::= graficar_dot:g parIzq EXPRESION:e1 coma EXPRESION:e2 parDer {: RESULT = new GraphDot(e1, e2, gright, gleft - 1); :}
+;
+
+GRAFICAR_ENV::= graficar_env:g parIzq parDer {: RESULT = new GraphEnv(gright, gleft - 1); :}
+;
+
+TIPO::= int_ {: RESULT = EnumType.entero; :}
+    | double_ {: RESULT = EnumType.doble; :}
+    | char_ {: RESULT = EnumType.caracter; :}
+    | string_ {: RESULT = EnumType.cadena; :}
+    | boolean_ {: RESULT = EnumType.booleano; :}
+;
+
+EXPRESION::= EXPRESION:e1 mas EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.SUMA, e1right, e1left - 1); :}
+    | EXPRESION:e1 menos EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.RESTA, e1right, e1left - 1); :}
+    | EXPRESION:e1 por EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MULTIPLICACION, e1right, e1left - 1); :}
+    | EXPRESION:e1 dividido EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.DIVISION, e1right, e1left - 1); :}
+    | EXPRESION:e1 potencia EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.POTENCIA, e1right, e1left - 1); :}
+    | EXPRESION:e1 modulo EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MODULO, e1right, e1left - 1); :}
+    | EXPRESION:e1 mayorQue EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MAYOR_QUE, e1right, e1left - 1); :}
+    | EXPRESION:e1 menorQue EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MENOR_QUE, e1right, e1left - 1); :}
+    | EXPRESION:e1 mayorIgual EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MAYOR_IGUAL, e1right, e1left - 1); :}
+    | EXPRESION:e1 menorIgual EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.MENOR_IGUAL, e1right, e1left - 1); :}
+    | EXPRESION:e1 igualIgual EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.IGUAL_IGUAL, e1right, e1left - 1); :}
+    | EXPRESION:e1 diferenteIgual EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.DIFERENTE_IGUAL, e1right, e1left - 1); :}
+    | EXPRESION:e1 and EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.AND, e1right, e1left - 1); :}
+    | EXPRESION:e1 or EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.OR, e1right, e1left - 1); :}
+    | EXPRESION:e1 xor EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.XOR, e1right, e1left - 1); :}
+    | EXPRESION:e1 punto EXPRESION:e2 {: RESULT = new Expression(e1, e2, Expression_type.ACCESO, e1right, e1left - 1); :}
+    | this_:t punto EXPRESION:e1 {: RESULT = new Expression(e1, Expression_type.THIS, tright, tleft - 1); :}
+    | not EXPRESION:e1 {: RESULT = new Expression(e1, Expression_type.NOT, e1right, e1left - 1); :}
+    | menos EXPRESION:e1 {: RESULT = new Expression(e1, Expression_type.NEGATIVO, e1right, e1left - 1); :}
+    | parIzq EXPRESION:e1 parDer {: RESULT = e1; :}
+    | entero:e {: RESULT = new Expression(((long)(Integer.parseInt(e))), eright, eleft - 1); :}
+    | doble:d {: RESULT = new Expression(Double.parseDouble(d), dright, dleft - 1); :}
+    | caracter:c {: RESULT = new Expression(c.charAt(1), cright, cleft - 1); :}
+    | cadena:c {: RESULT = new Expression(c.substring(1, c.length() - 1), cright, cleft - 1); :}
+    | true_:t {: RESULT = new Expression(true, tright, tleft - 1); :}
+    | false_:f {: RESULT = new Expression(false, fright, fleft - 1); :}
+    | null_:n {: RESULT = new Expression(Expression_type.NULO, nright, nleft - 1); :}
+    | id:i {: RESULT = new Expression(i, Expression_type.IDENTIFICADOR, iright, ileft - 1); :}
+    | id:i TAM_ARREGLOS:ta {: RESULT = new Expression(i, Expression_type.IDENTIFICADOR, ta, iright, ileft - 1); :}
+    | id:i masMas {: RESULT = new Expression(i, Expression_type.AUMENTO, iright, ileft - 1); :}
+    | id:i menosMenos {: RESULT = new Expression(i, Expression_type.DECREMENTO, iright, ileft - 1); :}
+    | FUNCTION_VOID_CALL:fvc {: RESULT = new Expression(fvc.id, fvc.parametersExpression, Expression_type.FUNCION, fvc.line, fvc.column); :}
+;
+

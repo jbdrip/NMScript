@@ -1,0 +1,177 @@
+/**
+*   Aquí voy a poner todas las funciones con las que se va a probar la recursividad
+*/
+
+class Funciones {
+
+    Funciones(){}
+
+    
+    /**
+     * RECURSION SIMPLE.
+     */
+    int factorial(int n) {
+        //return n == 0 ? 1 : n * factorial(n - 1);
+
+        switch(n){
+
+            case 0:
+                return 1;
+            
+            case 0:
+                return -100; //Si llega aquí está mal
+
+            default:
+                return n * factorial(n - 1); 
+                return -100; //Si llega aquí está mal
+        }
+
+
+    }
+
+    int potencia(int base, int exp) {
+        //return exp == 0 ? 1 : (base * potencia(base, exp - 1));
+
+
+        switch(exp){
+
+            case 0:
+                return 1;
+            case 0:
+                return -100; //Si llega aquí está mal
+            default:
+                return (base * potencia(base, exp - 1));
+                return -100; //Si llega aquí está mal
+
+        }
+    }
+
+    
+
+    /**
+     * RECURSION MULTIPLE.
+     */
+    int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    String Hanoi (int discos, int origen, int auxiliar, int destino) {
+        String result = "";
+        if (discos == 1) {
+            result = result + (origen + destino);
+        } else {
+            result = result + Hanoi(discos - 1, origen, destino, auxiliar);
+            result = result + (origen + destino);
+            result = result + Hanoi(discos - 1, auxiliar, origen, destino);
+        }
+        return result;
+    }
+
+    int particion(int[] arreglo, int bajo, int alto) {
+        int pivote = arreglo[alto];
+        int i = (bajo - 1);
+        for (int j = bajo; j < alto; j++) {
+            if (arreglo[j] <= pivote) {
+                i++;
+                int temp = arreglo[i];
+                arreglo[i] = arreglo[j];
+                arreglo[j] = temp;
+            }
+        }
+        int temp = arreglo[i + 1];
+        arreglo[i + 1] = arreglo[alto];
+        arreglo[alto] = temp;
+        return i + 1;
+    }
+
+    void quickSort(int[] arreglo, int bajo, int alto) {
+        if (bajo < alto) {
+            int pi = particion(arreglo, bajo, alto);
+            quickSort(arreglo, bajo, pi - 1);
+            quickSort(arreglo, pi + 1, alto);
+        }
+    }
+
+    
+
+    /**
+     * RECURSION CRUZADA.
+     */
+    int hofstaderFemenina(int n) {
+        if (n < 0) {
+            return 0;
+        } else {
+            //return (n == 0) ? 1 : n - hofstaderFemenina(n - 1);
+            if(n != 0){
+                return n - hofstaderFemenina(n - 1);
+            }else{ //Si n == 0
+                return 1;
+                return -100; //Si llega aquí está mal
+            }
+        }
+    }
+
+    int hofstaderMasculino(int n) {
+        if (n < 0) {
+            return 0;
+        } else {
+            //return n == 0 ? 0 : n - hofstaderMasculino(n - 1);
+            if(n != 0){
+                return n - hofstaderMasculino(n - 1);
+            }else{ //Si n == 0
+                return 0;
+                return -100; //Si llega aquí está mal
+            }
+        }
+    }
+
+    int par(int nump) {
+        if (nump == 0) {
+            return 1;
+        }
+        return impar(nump - 1);
+    }
+
+    int impar(int numi) {
+        if (numi == 0) {
+            return 0;
+        }
+        return par(numi - 1);
+    }
+
+    /**
+     * RECURSION ANIDADA.
+     */
+    int ackermann(int m, int n) {
+        if (m == 0) {
+            return (n + 1);
+        } else if (m > 0 && n == 0) {
+            return ackermann(m - 1, 1);
+        } else {
+            return ackermann(m - 1, ackermann(m, n - 1));
+        }
+    }
+
+    double reverse(double x, int length) {
+        if (length == 1) {
+            return x;
+        } else {
+            double b = x % 10;
+            x = x / 10;
+            x = x - (x % 1);
+            //return ((b * pow(10, length - 1)) + reverse(x, length-1));
+            return ((b * (10 ** (length - 1))) + reverse(x, length-1));
+        }
+    }
+
+    double mcd(double n1, double n2) {
+        if (n2 != 0) {
+            return mcd(n2, n1 % n2);
+        } else {
+            return n1;
+        }
+    }
+}

@@ -1,0 +1,24 @@
+/**
+*	Desde esta clase voy a correr todos los archivos
+*	de calificación
+**/
+
+Import "EntradasFase2/Funcionalidades.NM";
+
+class Proyecto{
+
+	void main(String error){
+		Println("1 punto menos por main incorrecto");
+	}
+
+	void main(){
+		Println("/*********** Iniciando la calificación ***********/\n\n");
+	
+		Funcionalidades f = new Funcionalidades();
+
+		Println("\n\n/********** Finalizando la calificación **********/");
+	}
+
+	
+
+}

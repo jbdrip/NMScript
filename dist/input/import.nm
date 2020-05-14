@@ -1,0 +1,2 @@
+import "asignacion.nm";
+print(a * 2 + " " + sirve);

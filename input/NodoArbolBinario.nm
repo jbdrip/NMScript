@@ -1,0 +1,82 @@
+class NodoArbolBinario
+{
+	int valor;
+        int id;
+	NodoArbolBinario izquierdo;
+	NodoArbolBinario derecho;
+
+	NodoArbolBinario(int valor)
+        {
+        	this.valor = valor;
+		this.id = valor;
+        	izquierdo = null;
+        	derecho = null;
+    	}
+
+    	void insertar(int valor)
+    	{
+    		if(valor < this.valor)
+		{	
+    			if(izquierdo == null)
+			{
+    				izquierdo = new NodoArbolBinario(valor);
+    			}
+			else
+			{
+    				izquierdo.insertar(valor);
+    			}
+
+	    	}
+		else if(valor > this.valor)
+		{
+    			if(derecho == null)
+			{
+    				derecho = new NodoArbolBinario(valor);
+    			}
+			else
+			{
+    				derecho.insertar(valor);
+    			}
+	    	}
+		else
+		{
+    			println("No se permiten los valores duplicados " + valor + ".");
+    		}
+    	}
+   
+    	String graficar() 
+    	{
+        	return getCodigoGraphviz();
+    	}
+
+    	String getCodigoGraphviz()
+    	{
+        	return "digraph grafica{\n" + "rankdir=TB;\n" + "node [shape = record, style=filled, fillcolor=seashell2];\n" + getCodigoInterno() + "}\n";
+    	}
+
+    
+	String getCodigoInterno()
+    	{
+        	String etiqueta;
+
+	        if(izquierdo == null && derecho == null)
+        	{
+            		etiqueta = "nodo" + id + " [ label =\"" + valor + "\"];\n";
+       		}
+        	else 
+        	{
+            		etiqueta = "nodo" + id + " [ label =\"<C0>|" + valor + "|<C1>\"];\n";
+        	}
+
+	        if(izquierdo != null)
+        	{
+	            	etiqueta = etiqueta + izquierdo.getCodigoInterno() + "nodo" + id + ":C0->nodo" + izquierdo.id + "\n";
+        	}
+	        if(derecho != null) 
+        	{
+	            	etiqueta = etiqueta + derecho.getCodigoInterno() + "nodo" + id + ":C1->nodo" + derecho.id + "\n";
+        	}
+	        return etiqueta;
+    	}
+
+}

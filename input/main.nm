@@ -1,0 +1,97 @@
+import "ArbolBinario.nm";
+import "ArbolAVL.nm";
+import "metodos_funciones.nm";
+
+class main
+{
+     int prueba()
+     {
+          println("entro");
+          return 10;
+     }
+
+     void main()
+     {
+          int[][][][] arreglo = new int[5][6][3][8];
+          String [][][] arreglo1;
+          ArbolBinario[][] arreglo2 = new ArbolBinario[3][5];
+          ArbolAVL[][][][][] arreglo3;
+          ArbolBinario[][][] arreglo4 = arreglo2;
+          println(arreglo.size);
+          println(arreglo1.size);
+          arreglo1 = new String[5];
+arreglo2[0][0] = new ArbolBinario();
+arreglo[0][0][0][0] = 10;
+arreglo1[0] = "Hola ";
+//arreglo1[1] = "¿";
+arreglo1[2] = "Como ";
+arreglo1[3] = "estas";
+arreglo1[4] = "?\n";
+for(int i = 0; i < arreglo1.size; i++)
+{
+          if(arreglo[0][0][0][0] <10){ print(arreglo1[i]); }
+else{println("estas ready alv perro");}
+          //print(arreglo1[i]);
+}
+          println(arreglo.size);
+          println(arreglo1.size);
+          ArbolBinario abb = new ArbolBinario();
+          abb.insertar(12);
+          abb.insertar(5);
+          abb.insertar(26);
+          abb.insertar(33);
+          abb.insertar(59);
+          abb.insertar(27);
+          abb.insertar(15);
+          print("Recorrido inorden del arbol ABB: ");
+          abb.inorden();
+          print("Recorrido preorden del arbol ABB: ");
+          abb.preorden();
+          print("Recorrido postorden del arbol ABB: ");
+          abb.postorden();
+          graficar_dot("abb.png", abb.getDot());
+          println("");
+
+          ArbolAVL arbol = new ArbolAVL();
+          arbol.insertar(12);
+          arbol.insertar(5);
+          arbol.insertar(26);
+          arbol.insertar(33);
+          arbol.insertar(59);
+          arbol.insertar(27);
+          arbol.insertar(15);
+          arbol.insertar(47);
+          arbol.insertar(74);
+          arbol.insertar(84);
+          arbol.insertar(88);
+          arbol.insertar(90);
+          arbol.insertar(124);
+          arbol.insertar(612);
+          arbol.inorden();
+          arbol.preorden();
+          arbol.postorden();
+          graficar_dot("avl.png", arbol.getDot());
+          println("");
+
+          metodos m = new metodos();
+          m.Hanoii(3, "A", "B", "C");
+          m.a = 5;
+          println("\n" + m.ackermann(m.a - 2, m.a + 2));
+          println(m.ackermann(3, 6));
+          println(m.par(1500));
+          println(m.factorial(12));
+          println(m.potencia(2, 6));
+          println(m.fibonacci(3));
+          println(m.Hanoi(3, 1, 2, 3));
+          println(m.hofstaderMasculino(15));
+          //if(m.a > 0) { return; }
+          //println(m.a);
+          //m.a = 2 * m.a + 5;
+          //println(m.a);
+          //m = new metodos();
+          //println(m.a);
+          //m = null;
+          //int pr = prueba();
+          //println(pr);
+     }
+}

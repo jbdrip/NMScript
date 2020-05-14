@@ -1,0 +1,175 @@
+
+Import "EntradasFase2/NodoTablaHash.NM";
+
+
+class TablaHash {
+
+    NodoTablaHash[] vector;
+    int cuenta; String dot;
+
+    TablaHash() {
+        vector = new NodoTablaHash[2];
+
+        inicializaTabla();
+    }
+
+    boolean existeNombre(String nombre) {
+        return buscaNodo(nombre) != null;
+    }
+
+    NodoTablaHash buscaNodo(String nombre) {
+        int indice = hash(nombre);
+        if (vector[indice].getNombre() != null) {
+            if (!(vector[indice].getNombre() == nombre)) {
+                return manejaColisionBusqueda(indice, nombre);
+            }
+        } else {
+            return manejaColisionBusqueda(indice, nombre);
+        }
+        return vector[indice];
+    }
+
+    NodoTablaHash manejaColisionBusqueda(int indice, String buscado) {
+        int index = indice;
+        int guia = 1;
+        int cuadrado;
+        int conteo = 0;
+        while (true && conteo <= vector.size) {
+            conteo++;
+            cuadrado = guia;
+            cuadrado = cuadrado * cuadrado;
+            index = index + cuadrado;
+            guia = guia + 1;
+            while (index >= vector.size) {
+                index = index - vector.size;
+            }
+            if (vector[index].getNombre() != null) {
+                if (vector[index].getNombre() == buscado) {
+                    return vector[index];
+                }
+            }
+        }
+        return null;
+    }
+
+    void insertarNodo(String nombre) {
+        int indice = hash(nombre);
+        cuenta++;
+
+        if (vector[indice].isUsada()) {
+            indice = manejaColision(indice);
+        }
+        vector[indice].nuevo(nombre);
+        vector[indice].setUsada(true);
+
+        double limite = 0.5;
+        double fc = ( (cuenta + 0.0) /  (vector.size + 0.0));
+        if (fc > limite) {
+            //Aca se graficaba la tabla previo a aumentar su tamaño :D
+            //this.grafica("hash");
+            //this.grafica("hash");
+            rehash();
+        }
+    }
+
+    void rehash() {
+        //aca se hace el rehashing
+        int nuevoTamanio = primoSiguiente(vector.size);
+        NodoTablaHash[] vectorAux = vector;
+        vector = new NodoTablaHash[nuevoTamanio];
+        inicializaTabla();
+        for (int i = 0; i < vectorAux.size; i++) {
+            if (vectorAux[i].isUsada()) {
+                insertarNodo(vectorAux[i].getNombre());
+            }
+        }
+    }
+
+    int manejaColision(int indice) {
+        int index = indice;
+        int guia = 1;
+        int cuadrado;
+        while (true) {
+
+            cuadrado = guia;
+            cuadrado = cuadrado* cuadrado;
+            index = index + cuadrado;
+            guia = guia + 1;
+            while (index >= vector.size) {
+                index = index - vector.size;
+            }
+            if (!vector[index].isUsada()) {
+                return index;
+            }
+        }
+        return 0;
+    }
+
+    int Asc(char s) {
+        return (s + 0);
+    }
+
+    int hash(String nombre) {
+        //char caracNombre[] = nombre.toCharArray();
+        //int k = (int) caracNombre[0] + (int) caracNombre[1] + (int) caracNombre[2];
+        //int indice = k % vector.length;
+        int indice = cuenta + 1 / vector.size;
+        return indice;
+    }
+
+    void inicializaTabla() {
+        cuenta = 0;
+        dot = "";
+        for (int i = 0; i < vector.size; i++) {
+            vector[i] = new NodoTablaHash(false);
+        }
+    }
+
+    int primoSiguiente(int numero) {
+        int aux = numero;
+        while (true) {
+            aux++;
+            if (esPrimo(aux)) {
+                return aux;
+            }
+        }
+        return 0;
+    }
+
+    boolean esPrimo(int numero) {
+        for (int i = 2; i < numero; i++) {
+            if (numero % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void grafica() {
+        dot = "digraph lista{ \n";
+        dot = dot +  " nodesep=.05;\n";
+        dot = dot +  "rankdir = LR; \n";
+        dot = dot +  "node [shape=record,width=.1,height=.1];\n";
+        dot = dot +  "nodeArreglo [label = \"<f0> 0 ";
+        for (int i = 1; i < vector.size; i++) {
+            dot = dot +  " |<f" + i + "> " + i;
+
+        }
+        dot = dot +  "\",height=2.5];\n";
+        dot = dot +  " node [width = 1.5];\n";
+
+        for (int j = 0; j < vector.size; j++) {
+
+            if (vector[j].isUsada()) {
+                dot = dot +  "node" + j + "[label = \" {<n> " + vector[j].getNombre() + "} \" ];\n";
+                dot = dot +  "nodeArreglo:f" + j + "-> node" + j + ":n;\n";
+            }
+        }
+        dot = dot +  "}";
+    }
+
+    void eliminarNodo(String nombre) {
+        buscaNodo(nombre).setUsada(false);
+    }
+
+}

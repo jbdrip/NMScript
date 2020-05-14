@@ -1,0 +1,6 @@
+import "asignacion2.nm";
+int a = 10;
+println(a++ + 15);
+//a = 15;
+println(a++ + 15);
+print(a + " " + sirve);

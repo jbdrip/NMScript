@@ -1,0 +1,40 @@
+class NodoAVL{
+	
+	int valor;
+    NodoAVL izquierdo;
+    NodoAVL derecho;
+    int altura;
+
+    NodoAVL(int valor) {
+        this.valor = valor;
+        this.izquierdo = null;
+        this.derecho = null;
+    }
+
+    String getDot() {
+        return "digraph grafica{\n"
+                + "rankdir=TB;\n"
+                + "node [shape = record, style=filled, fillcolor=seashell2];\n"
+                + getDotNodosInternos()
+                + "}\n";
+    }
+
+    String getDotNodosInternos() {
+        String etiqueta;
+        if (izquierdo == null && derecho == null) {
+            etiqueta = "nodo" + valor + " [ label =\"" + valor + "\"];\n";
+        } else {
+            etiqueta = "nodo" + valor + " [ label =\"<C0>|" + valor + "|<C1>\"];\n";
+        }
+        if (izquierdo != null) {
+            etiqueta = etiqueta + izquierdo.getDotNodosInternos()
+                    + "nodo" + valor + ":C0->nodo" + izquierdo.valor + "\n";
+        }
+        if (derecho != null) {
+            etiqueta = etiqueta + derecho.getDotNodosInternos()
+                    + "nodo" + valor + ":C1->nodo" + derecho.valor + "\n";
+        }
+        return etiqueta;
+    }
+
+}

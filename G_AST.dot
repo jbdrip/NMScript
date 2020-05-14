@@ -1,0 +1,14 @@
+digraph G
+ {
+ node5[label="INICIO"];
+node5->node4;
+node3[label="INSTRUCCION"];
+node4[label="INSTRUCCIONES"];
+node3->node2;
+node4->node3;
+node2[label="IMPRIMIR"];
+node2->node0;
+node0[label="EXPRESION"];
+ node1[label="cadena\nque"];
+node0->node1;
+}

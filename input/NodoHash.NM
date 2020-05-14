@@ -1,0 +1,14 @@
+class Nodo {
+
+    String nombre;
+    int llave;
+    int estado;
+
+    Nodo(String nombre, int llave)
+    {
+        this.nombre = nombre;
+        this.llave = llave;
+        this.estado = 2; // Estados: Vacio = 0 , Eliminado = 1 , Ocupado = 2
+    }
+
+}

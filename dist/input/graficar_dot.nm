@@ -1,0 +1,1 @@
+graficar_dot("img1.jpg", "digraph G {\nA;\n}");

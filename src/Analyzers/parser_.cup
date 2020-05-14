@@ -1,0 +1,735 @@
+package Analyzers;
+
+import proyecto_olc1.*;
+import java.util.ArrayList;
+import java_cup.runtime.*;
+import javax.swing.JOptionPane;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import Tree.Node;
+import Tree.Instruction;
+
+parser code
+{:
+    public LinkedList<Instruction> AST;
+    public ArrayList<Error_> errorList = new ArrayList<Error_>();
+
+    public String salida = "" ; // Aquí guardaremos nuestra resultado.
+    private int contador = 0;
+
+    public void syntax_error(Symbol s)
+    {
+        /*Error_ newError = new Error_(s.right, (s.left - 1), "Sintactico", "Elemento sintactico desconocido: '" + (String)s.value + "'");
+        errorList.add(newError);*/
+        //System.err.println("El analizador se recupero tras el error\nError en la Línea " + (s.right+1) + " Columna " + (s.left+1) + ". Identificador " + s.value + " no reconocido." );
+    }
+
+/**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+errores.*/
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("El analizador de la grafica del arbol No se recupero tras el error\nError en la Línea " + (s.right+1) + "Columna "+ (s.left+1)+ ". Identificador " + s.value + " no reconocido.");
+    }
+
+    public void setSalida(String cadena){salida = cadena;} // Metodo que guarda nuestro resultado.
+:}
+
+
+terminal String cadena, entero, doble, caracter, id, true_, false_;
+terminal String int_, double_, char_, string_, boolean_, null_, masMas, menosMenos;
+terminal String mas, menos, por, dividido, potencia, modulo, mayorQue, menorQue, mayorIgual, menorIgual, igualIgual, diferenteIgual, and, or, xor, not;
+terminal String coma, puntoComa, dosPuntos, igual, parIzq, parDer, llaveAbre, llaveCierre, import_, graficar_env;
+terminal String if_, else_, for_, while_, do_, switch_, case_, default_, break_, continue_, print_, println_, graficar_dot;
+
+non terminal INICIO;
+non terminal Node INSTRUCCIONES, ELSE;
+non terminal Node ELSE_IF;
+non terminal Node CASES;
+non terminal Node INSTRUCCION;
+non terminal Node EXPRESION;
+non terminal Node IMPRIMIR;
+non terminal Node GRAFICAR_DOT;
+non terminal Node GRAFICAR_ENV;
+non terminal Node DECLARACION;
+non terminal Node ASIGNACION;
+non terminal Node IF;
+non terminal Node FOR;
+non terminal Node WHILE;
+non terminal Node DOWHILE;
+non terminal Node SWITCH;
+non terminal Node IMPORT;
+non terminal Node TIPO;
+
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence left mayorQue, menorQue, mayorIgual, menorIgual, igualIgual, diferenteIgual;
+precedence left mas, menos;
+precedence left por, dividido, modulo;
+precedence left potencia;
+precedence right not;
+
+start with INICIO;
+
+INICIO::= INSTRUCCIONES:i
+    {:
+        salida = "digraph G\n {\n node" + contador + "[label=\"INICIO\"];\n";
+        salida += "node" + contador + "->node" + i.number +";\n";
+        salida += i.label;
+        contador++;
+    :}
+;
+
+INSTRUCCIONES::= INSTRUCCIONES:a INSTRUCCION:b
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"INSTRUCCION\"];\n";
+        RESULT.label += "node" + (contador + 1) + "[label=\"INSTRUCCIONES\"];\n";
+        RESULT.label += "node" + (contador + 1) + "->node" + a.number + ";\n"; 
+        RESULT.label += "node" + (contador + 1) + "->node" + contador + ";\n"; 
+        RESULT.label += "node" + contador + "->node" + b.number + ";\n";
+        RESULT.label += a.label;
+        RESULT.label += b.label;
+        RESULT.number = contador + 1;
+        contador = contador + 2;
+    :}
+    | INSTRUCCION:a
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"INSTRUCCION\"];\n";
+        RESULT.label += "node" + (contador + 1) + "[label=\"INSTRUCCIONES\"];\n";
+        RESULT.label += "node" + contador + "->node" + a.number + ";\n"; 
+        RESULT.label += "node" + (contador + 1) + "->node" + contador + ";\n"; 
+        RESULT.label += a.label; 
+        RESULT.number = contador + 1;
+        contador = contador + 2;
+    :}
+;
+
+INSTRUCCION::= IMPRIMIR:i puntoComa {: RESULT = i; :}
+    | GRAFICAR_DOT:g puntoComa {: RESULT = g; :}
+    | GRAFICAR_ENV:g puntoComa {: RESULT = g; :}
+    | DECLARACION:d puntoComa {: RESULT = d; :}
+    | ASIGNACION:a puntoComa {: RESULT = a; :}
+    | DOWHILE:d  puntoComa {: RESULT = d; :}
+    | IMPORT:i puntoComa {: RESULT = i; :}
+    | SWITCH:s {: RESULT = s; :}
+    | WHILE:w {: RESULT = w; :}
+    | FOR:f {: RESULT = f; :}
+    | IF:i {: RESULT = i; :}
+    | EXPRESION:e puntoComa {: RESULT = e; :}
+    | continue_:c puntoComa 
+    {:
+        Node n = new Node();
+        n.label = "node" + contador + "[label=\"CONTINUE\"];\n";
+        n.number = contador;
+        RESULT = n;
+        contador++;
+    :}
+    | break_:b puntoComa
+    {:
+        Node n = new Node();
+        n.label = "node" + contador + "[label=\"BREAK\"];\n";
+        n.number = contador;
+        RESULT = n;
+        contador++;
+    :}
+;
+
+IMPORT::= import_:i EXPRESION:e 
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IMPORT\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+DECLARACION::= TIPO:t id:i igual EXPRESION:e 
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"DECLARACION\"];\n";
+        RESULT.label += "node" + contador + "->node" + t.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += t.label;
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+ASIGNACION::= id:i igual EXPRESION:e 
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"ASIGNACION\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+FOR::= for_:f parIzq INSTRUCCION:i INSTRUCCION:c ASIGNACION:a parDer llaveAbre INSTRUCCIONES:ins llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"FOR\"];\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + c.number +";\n";
+        RESULT.label += "node" + contador + "->node" + a.number +";\n";
+        RESULT.label += "node" + contador + "->node" + ins.number +";\n";
+        RESULT.label += i.label;
+        RESULT.label += c.label;
+        RESULT.label += a.label;
+        RESULT.label += ins.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | for_:f parIzq INSTRUCCION:i INSTRUCCION:c EXPRESION:a parDer llaveAbre INSTRUCCIONES:ins llaveCierre 
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"FOR\"];\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + c.number +";\n";
+        RESULT.label += "node" + contador + "->node" + a.number +";\n";
+        RESULT.label += "node" + contador + "->node" + ins.number +";\n";
+        RESULT.label += i.label;
+        RESULT.label += c.label;
+        RESULT.label += a.label;
+        RESULT.label += ins.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+DOWHILE::= do_:d llaveAbre INSTRUCCIONES:i llaveCierre while_ parIzq EXPRESION:e parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"DO_WHILE\"];\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += i.label;
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+WHILE::= while_:w parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"WHILE\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+IF::= if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE:el
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + el.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.label += el.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE_IF:ei
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + ei.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.label += ei.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | if_:a parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre ELSE_IF:ei ELSE:el
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += "node" + contador + "->node" + ei.number +";\n";
+        RESULT.label += "node" + contador + "->node" + el.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.label += ei.label;
+        RESULT.label += el.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+ELSE_IF::= ELSE_IF:ei else_:a if_ parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"ELSE_IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + ei.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += ei.label;
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | else_:a if_ parIzq EXPRESION:e parDer llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"ELSE_IF\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+ELSE::= else_ llaveAbre INSTRUCCIONES:i llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"ELSE\"];\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+SWITCH::= switch_:s parIzq EXPRESION:e parDer llaveAbre CASES:c llaveCierre
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"SWITCH\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + c.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += c.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+CASES::= CASES:c case_:a EXPRESION:e dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"CASES\"];\n";
+        RESULT.label += "node" + contador + "->node" + c.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += c.label;
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | CASES:c default_:d dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"CASES\"];\n";
+        RESULT.label += "node" + contador + "->node" + c.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += c.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | case_:a EXPRESION:e dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"CASES\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += e.label;
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | default_:d dosPuntos INSTRUCCIONES:i
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"CASES\"];\n";
+        RESULT.label += "node" + contador + "->node" + i.number +";\n";
+        RESULT.label += i.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+IMPRIMIR::= println_:p parIzq EXPRESION:e parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IMPRIMIR\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | print_:p parIzq EXPRESION:e parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"IMPRIMIR\"];\n";
+        RESULT.label += "node" + contador + "->node" + e.number +";\n";
+        RESULT.label += e.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+GRAFICAR_DOT::= graficar_dot:g parIzq EXPRESION:e1 coma EXPRESION:e2 parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"GRAFICAR_DOT\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+GRAFICAR_ENV::= graficar_env:g parIzq parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"GRAFICAR_ENTORNOS\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+TIPO::= int_
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"TIPO\\n int\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+    | double_
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"TIPO\\n double\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+    | char_ 
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"TIPO\\n char\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+    | string_
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"TIPO\\n String\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+    | boolean_
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"TIPO\\n boolean\"];\n";
+        RESULT.number = contador;
+        contador++;
+    :}
+;
+
+EXPRESION::= EXPRESION:e1 mas EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n suma\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 menos EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n resta\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 por EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n multiplicacion\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 dividido EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n division\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 potencia EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n potencia\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 modulo EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n modulo\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 mayorQue EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n mayorQue\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 menorQue EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n menorQue\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 mayorIgual EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n mayorIgual\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 menorIgual EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n menorIgual\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 igualIgual EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n igualIgual\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 diferenteIgual EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n diferenteIgual\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 and EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n and\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 or EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n or\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | EXPRESION:e1 xor EXPRESION:e2
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n xor\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += "node" + contador + "->node" + e2.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.label += e2.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | not EXPRESION:e1
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n not\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | menos EXPRESION:e1
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n negativo\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | parIzq EXPRESION:e1 parDer
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\\n parentesis\"];\n";
+        RESULT.label += "node" + contador + "->node" + e1.number +";\n";
+        RESULT.label += e1.label;
+        RESULT.number = contador;
+        contador++;
+    :}
+    | entero:e
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"entero\\n" + e.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | doble:d
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"doble\\n" + d.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | caracter:c
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"caracter\\n" + c.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | cadena:c
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"cadena\\n" + c.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | true_:t
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"booleano\\n" + t.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | false_:f
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"booleano\\n" + f.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | null_:n
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"nulo\\n" + n.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | id:i
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"identificador\\n" + i.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | id:i masMas
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"aumento\\n" + i.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+    | id:i menosMenos
+    {:
+        RESULT = new Node();
+        RESULT.label = "node" + contador + "[label=\"EXPRESION\"];\n node" + (contador + 1)  + "[label=\"decremento\\n" + i.replace("\"", "") +"\"];\n";
+        RESULT.label += "node" + contador + "->node" + (contador + 1) +";\n";
+        RESULT.number = contador;
+        contador = contador + 2;
+    :}
+;
+

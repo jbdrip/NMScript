@@ -1,0 +1,200 @@
+
+import "NodoHash.NM";
+
+class Hash {
+
+    Nodo[] tabla;
+    int m;
+    int cantidad;
+    int contador = 0;
+
+    Hash(int m)
+    {
+        this.tabla = new Nodo[m];
+        this.m = m;
+    }
+
+    int funcion(int llave, int m)
+    {
+        return llave / m;
+    }
+
+    void insertarHash(Nodo nuevo)
+    {
+        int indice = funcion(contador, m);
+        int indiceTemp = indice;
+        do {
+            if (tabla[indice] == null) {
+                tabla[indice] = nuevo;
+                cantidad++;
+                break;
+            }
+            else {
+                indice = indice + 2;
+                if (m <= indice) {
+                    indice = indice - m;
+                }
+            }
+        } while (indice != indiceTemp);
+
+        if (desbordamiento()) {
+            redimensionar();
+        }
+        contador++;
+    }
+
+    void cancelar(int llave)
+    {
+        cancelarHash(llave);
+    }
+
+    void cancelarHash(int llave)
+    {
+        int indice = funcion(llave, m);
+        int indiceTemp = indice;
+        do {
+            if (tabla[indice] != null) {
+                if (tabla[indice].llave == llave) {
+                    tabla[indice].estado = 1;
+                    break;
+                }
+            }
+            else {
+                indice = indice + 2;
+                if (m <= indice) {
+                    indice = indice - m;
+                }
+            }
+        } while (indice != indiceTemp);
+    }
+
+    void redimensionar()
+    {
+        int temp = m;
+        m = siguientePrimo(m);
+        println("Redimencion: Hash[" + temp + "] -> Hash[" + m + "]");
+
+        Nodo[] nuevaTabla = new Nodo[m];
+
+        for (int i = 0; i < temp; i++) {
+            if (tabla[i] != null) {
+                nuevaTabla[i] = tabla[i];
+            }
+        }
+
+        tabla = nuevaTabla;
+    }
+
+    boolean desbordamiento()
+    {
+        return cantidad / m > 0.5;
+    }
+
+    int siguientePrimo(int inicio)
+    {
+        int siguiente = inicio + 1;
+        while (!esPrimo(siguiente)) {
+            siguiente++;
+        }
+        return siguiente;
+    }
+
+    boolean esPrimo(int numero)
+    {
+        int contador = 2;
+        boolean primo = true;
+        while ((primo) && (contador != numero)) {
+            if (numero % contador == 0) {
+                primo = false;
+            }
+            contador++;
+        }
+        return primo;
+    }
+
+    String graficar()
+    {
+        String dot = "digraph {\n";
+        dot = dot + "\tgraph [pad=\"0.5\", nodesep=\"0.5\", ranksep=\"2\"];\n";
+        dot = dot + "\tnode [shape=plain]\n";
+        dot = dot + "\trankdir=LR;\n";
+        dot = dot + "\tFoo [label=<<table border=\"0\" cellborder=\"1\" cellspacing=\"0\">\n";
+        dot = dot + "\t\t<tr><td><i>Llaves</i></td></tr>\n";
+        dot = dot + generarTabla();
+        dot = dot + "}\n";
+        return dot;
+    }
+
+    String generarTabla()
+    {
+        String codigo = "";
+        for (int i = 0; i < m; i++) {
+            if (tabla[i] != null) {
+                codigo = codigo + "\t\t<tr><td port=\"" + i + "\">llave: " + tabla[i].llave + "  Nombre: " + tabla[i].nombre + "</td></tr>\n";
+            }
+        }
+	codigo = codigo + "\t</table>>];\n";
+        return codigo;
+    }
+
+    void main()
+    {
+        Hash hash = new Hash(10);
+Nodo n0 = new Nodo("Pablo Emilio Escobar Gaviria", 0);
+       hash.insertarHash(n0);
+Nodo n1 = new Nodo("Ismael Zambada García", 1);
+       hash.insertarHash(n1);
+Nodo n2 = new Nodo("Nemesio Oseguera Cervantes", 2);
+        hash.insertarHash(n2);
+Nodo n3 = new Nodo("Rafael Caro Quintero", 3);
+        hash.insertarHash(n3);
+Nodo n4 = new Nodo("Juan José Esparragoza Moreno", 4);
+        hash.insertarHash(n4);
+Nodo n5 = new Nodo("Alfonso Arzate García", 5);
+        hash.insertarHash(n5);
+Nodo n6 = new Nodo("Fausto Isidro Meza Flores", 6);
+        hash.insertarHash(n6);
+Nodo n7 = new Nodo("Érick Valencia Salazar", 7);
+        hash.insertarHash(n7);
+Nodo n8 = new Nodo("René Arzate García", 8);
+        hash.insertarHash(n8);
+Nodo n9 = new Nodo("Jesús Alfredo Guzmán Salazar", 9);
+        hash.insertarHash(n9);
+Nodo n10 = new Nodo("Iván Archivaldo Guzmán Salazar", 10);
+        hash.insertarHash(n10);
+Nodo n11 = new Nodo("Joaquín El Chapo Guzmán", 11);
+        hash.insertarHash(n11);
+Nodo n12 = new Nodo("Abigael González Valencia", 12);
+        hash.insertarHash(n12);
+Nodo n13 = new Nodo("Adán Salazar Zamorano", 13);
+        hash.insertarHash(n13);
+Nodo n14 = new Nodo("Ana Marie Hernández Ledezma", 14);
+        hash.insertarHash(n14);
+Nodo n15= new Nodo("Ángel Humberto Cávez Gastélum", 15);
+        hash.insertarHash(n15);
+Nodo n16 = new Nodo("Antonio Laredo Donjuan", 16);
+        hash.insertarHash(n16);
+Nodo n17 = new Nodo("Carlos Arturo Quintana", 17);
+        hash.insertarHash(n17);
+Nodo n18 = new Nodo("Carlos Silva Arellano", 18);
+        hash.insertarHash(n18);
+Nodo n19 = new Nodo("César Octavio López Silva", 19);
+        hash.insertarHash(n19);
+Nodo n20 = new Nodo("Cleofas Alberto Martínez Gutiérrez", 20);
+        hash.insertarHash(n20);
+Nodo n21 = new Nodo("David Sánchez Hernández", 21);
+        hash.insertarHash(n21);
+Nodo n22 = new Nodo("Eduardo Ravelo Rodríguez", 22);
+        hash.insertarHash(n22);
+Nodo n23 = new Nodo("Eleazar Medina Rojas", 23);
+        hash.insertarHash(n23);
+Nodo n24 = new Nodo("Eugenio Javier Hernández Flores", 24);
+        hash.insertarHash(n24);
+Nodo n25 = new Nodo("Felipe Cabrera Sarabia", 25);
+        hash.insertarHash(n25);
+        graficar_dot("Narcos.pdf", hash.graficar());
+        //println(hash.graficar());
+    }
+
+}
+

@@ -1,0 +1,428 @@
+int a = 0;
+int n = 500000000;
+for(int a = 0; a<1000000; a++){
+	if(a==30){
+		break;	
+	}else if (a<25&&a>21){
+		continue;
+	}
+
+	switch(a){
+		case 0:
+			int num_num = 1+1;
+			//println(num_num);
+			if(num_num == 2){
+				println("int + int: Correcto");
+			}else{
+				println("int + int: Incorrecto");
+			}
+			break;
+		case 1:
+			double dob_num = 1.1+1;
+			//println(dob_num);
+			if(dob_num == 2.1){
+				println("double + int: Correcto");
+			}else{
+				println("double + int: Incorrecto");
+			}
+			break;
+		case 2:
+			double num_dob = 1.1+1;
+			//println(num_dob);
+			if(num_dob == 2.1){
+				println("int + double: Correcto");
+			}else{
+				println("int + double: Incorrecto");
+			}
+			break;
+		case 3:
+			double dob_dob = 1.1+1.1;
+			//println(dob_dob);
+			if(dob_dob == 2.2){
+				println("double + double: Correcto");
+			}else{
+				println("double + double: Incorrecto");
+			}
+			break;
+		case 4:
+			String cad_cad = "cadena"+" + cadena";
+			//println(cad_cad);
+			if(cad_cad == "cadena + cadena"){
+				println("string + string: Correcto");
+			}else{
+				println("string + string: Incorrecto");
+			}
+			break;
+		case 5:
+			String cad_num = "numero = "+1;
+			//println(cad_num);
+			if(cad_num == "numero = 1"){
+				println("string + int: Correcto");
+			}else{
+				println("string + int: Incorrecto");
+			}
+			break;
+		case 6:
+			String num_cad = 1 + " = numero";
+			//println(num_cad);
+			if(num_cad == "1 = numero"){
+				println("int + string: Correcto");
+			}else{
+				println("int + string: Incorrecto");
+			}
+			break;
+		case 7:
+			String cad_dob = "doble = "+1.1;
+			//println(cad_dob);
+			if(cad_dob == "doble = 1.1"){
+				println("string + double: Correcto");
+			}else{
+				println("string + double: Incorrecto");
+			}
+			break;
+		case 8:
+			String dob_cad = 1.1 + " = doble";
+			//println(dob_cad);
+			if(dob_cad == "1.1 = doble"){
+				println("double + string: Correcto");
+			}else{
+				println("double + string: Incorrecto");
+			}
+			break;
+		case 9:
+			String cad_car = "caracter = "+'$';
+			//println(cad_car);
+			if(cad_car == "caracter = $"){
+				println("string + char: Correcto");
+			}else{
+				println("string + char: Incorrecto");
+			}
+			break;
+		case 10:
+			String car_cad = '$' + " = caracter";
+			//println(car_cad);
+			if(car_cad == "$ = caracter"){
+				println("char + string: Correcto");
+			}else{
+				println("char + string: Incorrecto");
+			}
+			break;
+		case 11:
+			String cad_bol = "booleano = "+true;
+			//println(cad_bol);
+			if(cad_bol == "booleano = true"){
+				println("string + boolean: Correcto");
+			}else{
+				println("string + boolean: Incorrecto");
+			}
+			break;
+		case 12:
+			String bol_cad = false + " = booleano";
+			//println(bol_cad);
+			if(bol_cad == "false = booleano"){
+				println("boolean + string: Correcto");
+			}else{
+				println("boolean + string: Incorrecto");
+			}
+			break;
+		case 13:
+			double dob_car = 1.1+'1';
+			//println(dob_car);
+			if(dob_car == 50.1){
+				println("double + char: Correcto");
+			}else{
+				println("double + char: Incorrecto");
+			}
+
+			break;
+		case 14:
+			double car_dob = '1'+1.1;
+			//println(car_dob);
+			if(car_dob == 50.1){
+				println("char + double: Correcto");
+			}else{
+				println("char + double: Incorrecto");
+			}
+			break;
+		case 15:
+			int num_car = 1+'1';
+			//println(num_car);
+			if(num_car == 50){
+				println("int + char: Correcto");
+			}else{
+				println("int + char: Incorrecto");
+			}
+			break;
+		case 16:
+			int car_num = '1'+1;
+			//println(car_num);
+			if(car_num == 50){
+				println("char + int: Correcto");
+			}else{
+				println("char + int: Incorrecto");
+			}
+			break;
+		case 17:
+			int car_car = '1'+'1';
+			//println(car_car);
+			if(car_car == 98){
+				println("char + char: Correcto");
+			}else{
+				println("char + char: Incorrecto");
+			}
+			break;
+		case 18:	
+			println("----------------Fibonacci---------------");
+			int a = 0;
+			int b = 1;
+			int c = 0;
+			while (b<n){
+				println(b);
+				c=a+b;
+				a=b;
+				b=c;
+			}
+			println("--------------Fin--Fibonacci------------");
+			break;
+		case 19:	
+			println("----------------Serie[100]---------------");
+			int n = 100;
+			double serie = 0.0;
+			for (int i=1; i<n; i++){
+				serie = serie + (1/i);
+				println(serie);
+			}
+			println("--------------Fin--Serie------------");
+			break;
+		case 20:	
+			println("----------------Pares e Impares---------------");
+			int num = 0;
+			int suma = 0;
+			int ptotal = 0;
+			int itotal = 0;
+			int total = 1000;
+			int i = 0;
+			while (i<total)
+ 			{
+ 				if (num%2==0){  /* Es par */
+ 					ptotal++;
+					num++;
+ 				}else{
+ 					itotal++;
+ 					suma = suma+num;
+					num++;
+				} 
+				i++;			
+			}
+			println("Total de Pares: "+ptotal);
+			println("Total de Impares: "+itotal);
+			println("Promedio: "+suma+"/"+total+" = "+(suma/total));
+			println("--------------Fin--Pares e Impares------------");
+			break;
+		case 21:	
+			println("----------------Logaritmo---------------");
+			int n = 100;
+			double x = 0.25;
+			double potx = 0.25;
+			double lnep = 0.0;
+			for (int k = 1; k < n; k++)
+ 			{
+ 				lnep = lnep + potx/k ;
+ 				potx = potx*(-1)*x;
+ 			}
+			println("ln(x+1)=" + lnep);
+			println("--------------Fin--Logaritmo------------");
+			break;
+		default:
+			if (a<25&&a>21){
+				println("no sirven mis continues D:");
+			}
+			println("Soy "+a+". :p");
+			break;
+	}
+}
+println("a(antiguo)["+a+"]");
+
+
+/*Salida Correcta :D
+
+int + int: Correcto
+double + int: Correcto
+int + double: Correcto
+double + double: Correcto
+string + string: Correcto
+string + int: Correcto
+int + string: Correcto
+string + double: Correcto
+double + string: Correcto
+string + char: Correcto
+char + string: Correcto
+string + boolean: Correcto
+boolean + string: Correcto
+double + char: Correcto
+char + double: Correcto
+int + char: Correcto
+char + int: Correcto
+char + char: Correcto
+----------------Fibonacci---------------
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89
+144
+233
+377
+610
+987
+1597
+2584
+4181
+6765
+10946
+17711
+28657
+46368
+75025
+121393
+196418
+317811
+514229
+832040
+1346269
+2178309
+3524578
+5702887
+9227465
+14930352
+24157817
+39088169
+63245986
+102334155
+165580141
+267914296
+433494437
+--------------Fin--Fibonacci------------
+----------------Serie[100]---------------
+1.0
+1.5
+1.8333333333333333
+2.083333333333333
+2.283333333333333
+2.4499999999999997
+2.5928571428571425
+2.7178571428571425
+2.8289682539682537
+2.9289682539682538
+3.0198773448773446
+3.103210678210678
+3.180133755133755
+3.251562326562327
+3.3182289932289937
+3.3807289932289937
+3.439552522640758
+3.4951080781963135
+3.547739657143682
+3.597739657143682
+3.6453587047627294
+3.690813250217275
+3.73429151108684
+3.7759581777535067
+3.8159581777535068
+3.854419716215045
+3.8914567532520823
+3.927171038966368
+3.9616537975870574
+3.9949871309203906
+4.02724519543652
+4.05849519543652
+4.08879822573955
+4.118209990445433
+4.146781419016861
+4.174559196794639
+4.201586223821666
+4.22790201329535
+4.2535430389363755
+4.278543038936376
+4.302933282838815
+4.326742806648339
+4.349998620601827
+4.3727258933290996
+4.394948115551322
+4.416687245986104
+4.4379638417307845
+4.4587971750641175
+4.4792053383294235
+4.499205338329423
+4.518813181466678
+4.538043950697447
+4.556911875225749
+4.575430393744267
+4.593612211926086
+4.611469354783229
+4.6290132144323515
+4.646254593742697
+4.6632037462850695
+4.679870412951736
+4.696263855574687
+4.712392887832752
+4.7282659037057675
+4.7438909037057675
+4.759275519090383
+4.774427034241898
+4.789352407376227
+4.804058289729168
+4.818551043352357
+4.832836757638071
+4.846921264680325
+4.860810153569214
+4.8745087837062
+4.888022297219713
+4.901355630553047
+4.914513525289889
+4.927500538276902
+4.940321051097415
+4.9529792789455165
+4.965479278945517
+4.977824957957862
+4.9900200799090815
+5.002068272680166
+5.013973034584928
+5.025737740467281
+5.037365647444025
+5.048859900317588
+5.0602235366812245
+5.0714594917374045
+5.082570602848516
+5.0935596138375265
+5.104429179054918
+5.115181867226961
+5.125820165099301
+5.136346480888775
+5.146763147555442
+5.157072425905957
+5.1672765075386105
+5.177377517639621
+--------------Fin--Serie------------
+----------------Pares e Impares---------------
+Total de Pares: 500
+Total de Impares: 500
+Promedio: 250000/1000 = 250
+--------------Fin--Pares e Impares------------
+----------------Logaritmo---------------
+ln(x+1)=0.22314355131420976
+--------------Fin--Logaritmo------------
+Soy 25. :p
+Soy 26. :p
+Soy 27. :p
+Soy 28. :p
+Soy 29. :p
+a(antiguo)[0]
+
+*/

@@ -1,0 +1,186 @@
+Import "EntradasFase2/Escalonada.NM";
+Import "EntradasFase2/CuadroMagico.NM";
+
+class Arreglos{
+	
+
+
+	Arreglos(){
+		
+        Println("--------------- Matriz Escalonada ---------------");
+        Escalonada escal = new Escalonada();
+
+
+        Println("--------------- Cuadro Mágico ---------------");
+        int n = 5;
+        while (n > 2) {
+            CuadroMagico cuadro = new CuadroMagico(n);
+            cuadro.pintarCuadroMagico();
+            if (cuadro.esCuadroMagico()) {
+                Println("La constante mágica es " + cuadro.sumaTotal());
+                Println("Su cuadrado mágico " + n + " x " + n + " es: ");
+                Println(cuadro.imprimirCuadro());
+            }
+            n--;
+        }
+
+	
+        //a1();
+		//a2();
+		//a3();
+
+	}
+
+	//Arreglo con valores
+	void a1(){
+		Println("--------------- Arreglos parte 1 ---------------");
+		int int_;
+		double double_;
+		char char_;
+
+		//Aritméticas
+		int_ = (584128858 + - 6348675 * -960 + 'N' - 181220199 * 'M') / 15;
+		double_ = (584128858 + - 6348675 * -870 + 'N' - 181220199 * 'M') / 15 + ((2 **((5)))) - - - 10000000;
+		//double_ = (584128858 + - 6348675 * -960 + 'N' - 181220199 * 'M') / 15 + pow(2,5) - - - 10000000;
+		
+		//Declaración del arreglo
+		double[] a1  = {int_ + 0.0, - 450 + - 150 + 0.0, -(5 * 9 + 25 / 5) + 0.0, 4.0 * 4, double_};
+		imprimirArreglo(a1);
+
+
+		//Asignación a las posiciones del arreglo
+		boolean[] a2 = {true, false, true, false, true, false};
+		//Relacionales
+		char_ = 'N';
+		char_ --; //M
+		
+		a2[0] = (char_ > 77);
+		a2[1] = (char_ < 78);
+		a2[2] = (char_ + 10 <= char_);
+		a2[3] = (char_ + 10 >= char_);
+		a2[4] = (char_ -- == char_);
+		a2[5] = (char_ + 1 != char_ ++);
+		imprimirArreglo(a2);
+
+		//Cambiando completamente el arreglo
+		a1 = {2020.0};
+		imprimirArreglo(a1);
+
+		char_ = 'N';
+		char_ --; //M
+		a2 = {(char_ > 77 || false), (char_ < 78 && true), (char_ + 10 <= char_ ^ false), (!!!!!!!!!!!! (char_ + 10 >= char_))};
+		imprimirArreglo(a2);
+	}
+
+	//Arreglo sin valores
+	void a2(){
+		Println("--------------- Arreglos parte 2 ---------------");
+		int int_;
+		double double_;
+		char char_;
+
+		//Aritméticas
+		int_ = (584128858 + - 6348675 * -960 + 'N' - 181220199 * 'M') / 15;
+		double_ = (584128858 + - 6348675 * -870 + 'N' - 181220199 * 'M') / 15 + ((2 **((5)))) - - - 10000000;
+		//double_ = (584128858 + - 6348675 * -960 + 'N' - 181220199 * 'M') / 15 + pow(2,5) - - - 10000000;
+		
+		//Declaración del arreglo
+		double [] a1 ;
+		a1 = new double[10];
+		imprimirArreglo(a1);
+		
+
+
+		//Asignación a las posiciones del arreglo
+		boolean [] a2;
+		a2 = new boolean[10];
+		//Relacionales
+		char_ = 'N';
+		char_ --; //M
+		
+		a2[0] = (char_ > 77);
+		a2[1] = (char_ < 78);
+		a2[2] = (char_ + 10 <= char_);
+		a2[3] = (char_ + 10 >= char_);
+		a2[4] = (char_ -- == char_);
+		a2[5] = (char_ + 1 != char_ ++);
+		imprimirArreglo_(a2);
+
+		//Cambiando completamente el arreglo
+		a1 = {int_ + 0.0, - 450 + - 150 + 0.0, -(5 * 9 + 25 / 5) + 0.0, 4.0 * 4, double_};
+		imprimirArreglo(a1);
+
+		char_ = 'N';
+		char_ --; //M
+		a2 = {(char_ > 77 || false), (char_ < 78 && true), (char_ + 10 <= char_ ^ false), (!!!!!!!!!!!! (char_ + 10 >= char_))};
+		imprimirArreglo_(a2);
+	}
+
+	//Arreglo de profundidad N
+	void a3(){
+		Println("--------------- Arreglos parte 3 ---------------");
+		String [][][][][][] arreglo = new String [2][2][1][1][1][5];
+		//Asigno valores
+		for(int i_1 = 0; i_1 < arreglo.size; i_1++){
+			for(int i_2 = 0; i_2 < arreglo[i_1].size; i_2++){
+				for(int i_3 = 0; i_3 < arreglo[i_1][i_2].size; i_3++){
+					for(int i_4 = 0; i_4 < arreglo[i_1][i_2][i_3].size; i_4++){
+						for(int i_5 = 0; i_5 < arreglo[i_1][i_2][i_3][i_4].size; i_5++){
+							for(int i_6 = 0; i_6 < arreglo[i_1][i_2][i_3][i_4][i_5].size; i_6++){
+								arreglo[i_1][i_2][i_3][i_4][i_5][i_6] = "[" + i_1 + "]" + "[" + i_2 + "]" + "[" + i_3 + "]" + "[" + i_4 + "]" + "[" + i_5 + "]" + "[" + i_6 + "]";
+							}	
+						}
+					}	
+				}
+			}			
+		}
+
+		//Imprimo los valores
+		for(int i_1 = 0; i_1 < arreglo.size; i_1++){
+			for(int i_2 = 0; i_2 < arreglo[i_1].size; i_2++){
+				for(int i_3 = 0; i_3 < arreglo[i_1][i_2].size; i_3++){
+					for(int i_4 = 0; i_4 < arreglo[i_1][i_2][i_3].size; i_4++){
+						for(int i_5 = 0; i_5 < arreglo[i_1][i_2][i_3][i_4].size; i_5++){
+							//for(int i_6 = 0; i_6 < arreglo[i_1][i_2][i_3][i_4][i_5].size; i_6++){
+								imprimirArreglo__(arreglo[i_1][i_2][i_3][i_4][i_5]);
+println(arreglo[i_1][i_2][i_3][i_4][i_5]); return;
+							//}	
+						}
+					}	
+				}
+			}			
+		}
+
+		Println("");
+	}
+
+
+	//Imprimir los elementos de un arreglo con size
+	void imprimirArreglo(double[] arreglo){
+		Println("-------> Arreglo de tipo double");
+		for(int i = 0; i < arreglo.size;i = i + 1){
+			Println("arreglo[" + i + "] = " + arreglo[i]);
+		}
+		Println("");
+	}
+
+	//Imprimir los elementos de un arreglo con size
+	void imprimirArreglo_(boolean[] arreglo){
+		Println("-------> Arreglo de tipo boolean");
+		for(int i = 0; i < arreglo.size;i = i + 1){
+			Println("arreglo[" + i + "] = " + arreglo[i]);
+		}
+		Println("");
+	}
+
+	//Imprimir arreglo de varias dimensiones
+	void imprimirArreglo__(String[] arreglo){
+		Println("-------> Arreglo de tipo String");
+		for(int i = 0; i < arreglo.size;i = i + 1){
+			Println("arreglo[" + i + "] = " + arreglo[i]);
+		}
+		Println("");
+	}
+
+
+}

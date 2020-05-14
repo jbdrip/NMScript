@@ -1,0 +1,80 @@
+
+
+class Nodo{
+
+    int[][] padre;
+
+    Nodo [][][] getNew(){
+	return new Nodo[100][2][50]; 
+    }
+
+    void LlenarArreglo(int a, int b, int[][] arr){
+	for(int x = 0; x < a; x++){
+		for(int y = 0; y < b; y++){
+			arr[x][y] = x*b+y;
+		}
+	}
+    }
+
+    void LlenarArregloSize(int[][] arr){
+	for(int x = 0; x < arr.size; x++){
+		for(int y = 0; y < arr[x].size; y++){
+			arr[x][y] = x*arr[x].size+y;
+		}
+	}
+    }
+
+    void verArreglo(int a, int b, int[][] arr){
+	for(int x = 0; x < a; x++){
+		for(int y = 0; y < b; y++){
+			println("arr[" + x + "][" + y + "] = " + arr[x][y]);
+		}
+	}
+    }
+
+    void verArregloSize(int[][] arr){
+	for(int x = 0; x < arr.size; x++){
+		for(int y = 0; y < arr[x].size; y++){
+			println("arr[" + x + "][" + y + "] = " + arr[x][y]);
+		}
+	}
+    }
+
+    int [][] getArregloInt(int a, int b){
+	return new Int[a][b];
+    }
+
+    int tak(int x, int y, int z){
+	if (y >= x) {
+		return z;
+	} else {
+		return tak(tak(x-1, y, z), tak(y-1, z, x), tak(z-1, x, y));
+	}
+    }
+
+    void main(){
+	Nodo principal = new Nodo();//principal.padre
+	//println(principal.padre[0][0]);
+	principal.padre = principal.getArregloInt(10, 25);
+	//principal.LlenarArreglo(10, 25, arrInt);
+	principal.LlenarArregloSize(principal.padre);
+	//principal.verArreglo(10, 25, arrInt);
+	principal.verArregloSize(principal.padre);
+	principal.padre[5].size;
+	println(principal.padre[9][24]);
+	principal.padre[9][24]++;
+	println(principal.padre[9][24]);
+	principal.padre[9][24]--;
+	println(principal.padre[9][24]);
+	Nodo [][][] arreglo = null;
+	arreglo = null;
+	arreglo = principal.getNew();
+	arreglo[0][0][0] = new Nodo();
+	Nodo[] a = null;
+	a = arreglo[0][0];
+	println(arreglo[0][0][0].tak(25, 10, 23));
+	graficar_entornos();
+    }
+
+}
+
